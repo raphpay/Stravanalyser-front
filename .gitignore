@@ -25,3 +25,8 @@ dist-ssr
 
 # Common
 .env
+
+# Specific to this project
+activities.json
+data.json
+rawActivities.json
