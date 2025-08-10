@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import type Activity from "../models/Activity.js";
 import type Timeline from "../models/Timeline.js";
+import analyzeTimeline from "./timelineAnalysis.js";
 
 export async function analyseActivities(activities: Activity[]) {
   const tssMap = buildTSSByDay(activities);
@@ -9,8 +10,8 @@ export async function analyseActivities(activities: Activity[]) {
   const timeline = computeLoadTimeline(tssMap);
   // ------ Curseur de conversion----
 
-  // analyzeTimeline(timeline);
-  return timeline;
+  const analysisResult = analyzeTimeline(timeline);
+  return { timeline, analysisResult };
 }
 
 // === 1. Build daily TSS map ===

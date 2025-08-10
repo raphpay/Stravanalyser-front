@@ -1,14 +1,22 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { analyseActivities } from "../business-logic/analysis/analyseActivities";
+import type { AnalysisResult } from "../business-logic/analysis/timelineAnalysis";
 import type Activity from "../business-logic/models/Activity";
 import type StravaProfile from "../business-logic/models/StravaProfile";
+import type Timeline from "../business-logic/models/Timeline";
+import TimelineTable from "./TimelineTable";
 
 export default function DashboardPage() {
   const BACKEND_URL = import.meta.env.VITE_BACK_END_URL;
 
   const [profile, setProfile] = useState<StravaProfile | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [analysisDone, setAnalysisDone] = useState<boolean>();
+  const [timeline, setTimeline] = useState<Timeline[]>();
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
+    null
+  );
 
   async function getProfileInfo() {
     const cachedUser = localStorage.getItem("current_user") as string;
@@ -51,8 +59,11 @@ export default function DashboardPage() {
 
   async function analyseUserActivities() {
     try {
-      const timeline = await analyseActivities(activities);
-      console.table(timeline.slice(-10));
+      const result = await analyseActivities(activities);
+      console.log("re", result);
+      setTimeline(result.timeline.slice(-10));
+      setAnalysisDone(true);
+      setAnalysisResult(result.analysisResult);
     } catch (error) {
       console.error("Error analysing", error);
     }
@@ -87,7 +98,7 @@ export default function DashboardPage() {
       >
         Analyser les activités
       </button>
-      {activities && (
+      {/* {activities && (
         <ul>
           {activities.map((act) => (
             <li key={act.id}>
@@ -95,6 +106,17 @@ export default function DashboardPage() {
             </li>
           ))}
         </ul>
+      )} */}
+      {activities && !analysisDone && (
+        <p>Activités chargées, analyses les maintenant !!</p>
+      )}
+      {analysisDone && analysisResult && <p>{analysisResult.status}</p>}
+      {analysisDone && analysisResult && <p>{analysisResult.suggestion}</p>}
+      {analysisDone && analysisResult && analysisResult?.recovery && (
+        <p>{analysisResult.recovery}</p>
+      )}
+      {analysisDone && analysisResult && timeline && (
+        <TimelineTable timeline={timeline} />
       )}
     </div>
   );
