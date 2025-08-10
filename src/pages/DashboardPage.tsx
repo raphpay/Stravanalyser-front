@@ -6,6 +6,7 @@ export default function DashboardPage() {
   const BACKEND_URL = import.meta.env.VITE_BACK_END_URL;
 
   const [profile, setProfile] = useState<StravaProfile | null>(null);
+  const [activities, setActivities] = useState<any[]>([]);
 
   async function getProfileInfo() {
     const cachedUser = localStorage.getItem("current_user") as string;
@@ -26,6 +27,15 @@ export default function DashboardPage() {
     }
   }
 
+  async function fetchActivities() {
+    const athleteId = localStorage.getItem("athleteId");
+    const refresh = !!localStorage.getItem("activities");
+    const res = await axios.get(`${BACKEND_URL}/activities`, {
+      params: { athleteId, refresh },
+    });
+    setActivities(res.data);
+  }
+
   useEffect(() => {
     async function init() {
       getProfileInfo();
@@ -37,6 +47,21 @@ export default function DashboardPage() {
   return (
     <div>
       Bienvenue {profile.firstname} {profile.lastname} !
+      <button
+        onClick={fetchActivities}
+        className="bg-orange-500 text-white px-4 py-2 rounded"
+      >
+        Charger les activités
+      </button>
+      {activities && (
+        <ul>
+          {activities.map((act) => (
+            <li key={act.id}>
+              {act.name} - {act.distance.toFixed(2) / 1000} km
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
