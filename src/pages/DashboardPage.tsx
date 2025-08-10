@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { analyseActivities } from "../business-logic/analysis/analyseActivities";
 import type { AnalysisResult } from "../business-logic/analysis/timelineAnalysis";
 import type Activity from "../business-logic/models/Activity";
@@ -9,6 +10,8 @@ import TimelineTable from "./TimelineTable";
 
 export default function DashboardPage() {
   const BACKEND_URL = import.meta.env.VITE_BACK_END_URL;
+
+  const navigate = useNavigate();
 
   const [profile, setProfile] = useState<StravaProfile | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -94,15 +97,6 @@ export default function DashboardPage() {
       >
         Analyser les activités
       </button>
-      {/* {activities && (
-        <ul>
-          {activities.map((act) => (
-            <li key={act.id}>
-              {act.name} - {act.distanceKm} km
-            </li>
-          ))}
-        </ul>
-      )} */}
       {activities && !analysisDone && (
         <p>Activités chargées, analyses les maintenant !!</p>
       )}
@@ -114,6 +108,14 @@ export default function DashboardPage() {
       {analysisDone && analysisResult && timeline && (
         <TimelineTable timeline={timeline} />
       )}
+      <button
+        className="fixed bottom-6 right-6 w-12 h-12 bg-orange-500 text-white rounded-full shadow-lg flex items-center justify-center text-xl font-bold cursor-pointer"
+        onClick={() => navigate("/help")}
+        aria-label="Aide"
+        title="Aide"
+      >
+        ?
+      </button>
     </div>
   );
 }
