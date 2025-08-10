@@ -23,7 +23,7 @@ export default function analyzeTimeline(timeline: Timeline[]) {
   // Analyse TSB (fraîcheur)
   if (tsb > 10) {
     status += "🟢 Tu es très frais (TSB > +10)\n";
-    suggestion += "➕ Augmente l’intensité ou prévois une compétition.\n";
+    suggestion += "＋ Augmente l'intensité ou prévois une compétition.\n";
   } else if (tsb > 5) {
     status += "✅ Tu es dans la zone optimale (TSB entre +5 et +10)\n";
     suggestion += "🎯 Parfait pour performer !\n";
@@ -46,7 +46,8 @@ export default function analyzeTimeline(timeline: Timeline[]) {
   } else if (ctlDelta > 1) {
     status += "↗️ CTL en légère hausse (+" + ctlDelta.toFixed(1) + " en 14j)\n";
   } else if (ctlDelta > -1) {
-    status += "➡️ CTL stable (~" + ctlNow.toFixed(1) + ")\n";
+    const ctl = ctlNow ?? 0;
+    status += "➡️ CTL stable (~" + ctl.toFixed(1) + ")\n";
   } else {
     status += "📉 CTL en baisse (" + ctlDelta.toFixed(1) + " en 14j)\n";
     suggestion += "⚠️ Attention à ne pas trop relâcher l'effort.\n";
