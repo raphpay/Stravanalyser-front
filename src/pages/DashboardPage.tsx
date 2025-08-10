@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { analyseActivities } from "../business-logic/analysis/analyseActivities";
+import type Activity from "../business-logic/models/Activity";
 import type StravaProfile from "../business-logic/models/StravaProfile";
 
 export default function DashboardPage() {
   const BACKEND_URL = import.meta.env.VITE_BACK_END_URL;
 
   const [profile, setProfile] = useState<StravaProfile | null>(null);
-  const [activities, setActivities] = useState<any[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
   async function getProfileInfo() {
     const cachedUser = localStorage.getItem("current_user") as string;
@@ -18,7 +20,6 @@ export default function DashboardPage() {
         const athleteId = localStorage.getItem("athleteId");
         const res = await axios.get(`${BACKEND_URL}/auth/profile/${athleteId}`);
         const user: StravaProfile = res.data;
-        console.log("user", user);
         setProfile(user);
         localStorage.setItem("current_user", JSON.stringify(user));
       } catch (error) {
@@ -27,13 +28,34 @@ export default function DashboardPage() {
     }
   }
 
-  async function fetchActivities() {
+  async function fetchActivities(refresh: boolean = false) {
     const athleteId = localStorage.getItem("athleteId");
-    const refresh = !!localStorage.getItem("activities");
     const res = await axios.get(`${BACKEND_URL}/activities`, {
       params: { athleteId, refresh },
     });
-    setActivities(res.data);
+    const rawData = res.data as any[];
+    const data: Activity[] = rawData.map((item) => ({
+      id: item.id,
+      date: item.start_date,
+      name: item.name,
+      type: item.type,
+      distanceKm: (item.distance / 1000).toFixed(2).toString(),
+      elevationGain: item.total_elevation_gain,
+      avgHR: item.average_heartrate,
+      movingTime: item.moving_time,
+      elapsedTime: item.elapsed_time,
+    }));
+    localStorage.setItem("activities", JSON.stringify(data));
+    setActivities(data);
+  }
+
+  async function analyseUserActivities() {
+    try {
+      const timeline = await analyseActivities(activities);
+      console.table(timeline.slice(-10));
+    } catch (error) {
+      console.error("Error analysing", error);
+    }
   }
 
   useEffect(() => {
@@ -45,19 +67,31 @@ export default function DashboardPage() {
 
   if (!profile) return <div>Chargement du profil...</div>;
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       Bienvenue {profile.firstname} {profile.lastname} !
       <button
-        onClick={fetchActivities}
+        onClick={() => fetchActivities()}
         className="bg-orange-500 text-white px-4 py-2 rounded"
       >
         Charger les activités
+      </button>
+      <button
+        onClick={() => fetchActivities(true)}
+        className="bg-orange-500 text-white px-4 py-2 rounded"
+      >
+        Recharger les activités
+      </button>
+      <button
+        onClick={analyseUserActivities}
+        className="bg-orange-500 text-white px-4 py-2 rounded"
+      >
+        Analyser les activités
       </button>
       {activities && (
         <ul>
           {activities.map((act) => (
             <li key={act.id}>
-              {act.name} - {act.distance.toFixed(2) / 1000} km
+              {act.name} - {act.distanceKm} km
             </li>
           ))}
         </ul>
