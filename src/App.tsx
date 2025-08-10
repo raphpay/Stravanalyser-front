@@ -1,21 +1,26 @@
 import "./App.css";
 
-function App() {
-  const BACKEND_URL = import.meta.env.VITE_BACK_END_URL;
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-  async function connectStrava() {
-    window.location.href = `${BACKEND_URL}/auth/login`;
-  }
+import AuthSuccessPage from "./pages/AuthSuccessPage";
+import DashboardPage from "./pages/DashboardPage";
+import HomePage from "./pages/HomePage";
 
+const AppContent: React.FC = () => {
   return (
-    <div className="p-4">
-      <button
-        onClick={connectStrava}
-        className="bg-orange-500 text-white px-4 py-2 rounded"
-      >
-        Se connecter à Strava
-      </button>
-    </div>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/auth/success/:athleteId" element={<AuthSuccessPage />} />
+      <Route path="/dashboard/" element={<DashboardPage />} />
+    </Routes>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
