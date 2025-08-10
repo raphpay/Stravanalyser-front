@@ -5,7 +5,6 @@ import analyzeTimeline from "./timelineAnalysis.js";
 
 export async function analyseActivities(activities: Activity[]) {
   const tssMap = buildTSSByDay(activities);
-  console.log("tssMap", tssMap);
   // ------ Curseur de conversion----
   const timeline = computeLoadTimeline(tssMap);
   // ------ Curseur de conversion----

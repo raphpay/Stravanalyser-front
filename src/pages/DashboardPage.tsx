@@ -36,8 +36,9 @@ export default function DashboardPage() {
     }
   }
 
-  async function fetchActivities(refresh: boolean = false) {
+  async function fetchActivities() {
     const athleteId = localStorage.getItem("athleteId");
+    const refresh = activities.length === 0;
     const res = await axios.get(`${BACKEND_URL}/activities`, {
       params: { athleteId, refresh },
     });
@@ -53,14 +54,12 @@ export default function DashboardPage() {
       movingTime: item.moving_time,
       elapsedTime: item.elapsed_time,
     }));
-    localStorage.setItem("activities", JSON.stringify(data));
     setActivities(data);
   }
 
   async function analyseUserActivities() {
     try {
       const result = await analyseActivities(activities);
-      console.log("re", result);
       setTimeline(result.timeline.slice(-10));
       setAnalysisDone(true);
       setAnalysisResult(result.analysisResult);
@@ -82,19 +81,16 @@ export default function DashboardPage() {
       Bienvenue {profile.firstname} {profile.lastname} !
       <button
         onClick={() => fetchActivities()}
-        className="bg-orange-500 text-white px-4 py-2 rounded"
+        className="bg-orange-500 text-white px-4 py-2 rounded cursor-pointer"
       >
-        Charger les activités
-      </button>
-      <button
-        onClick={() => fetchActivities(true)}
-        className="bg-orange-500 text-white px-4 py-2 rounded"
-      >
-        Recharger les activités
+        {activities.length === 0
+          ? "Recharger les activités"
+          : "Charger les activités"}
       </button>
       <button
         onClick={analyseUserActivities}
-        className="bg-orange-500 text-white px-4 py-2 rounded"
+        disabled={activities.length === 0}
+        className="bg-orange-500 disabled:bg-orange-50 text-white disabled:text-black px-4 py-2 rounded enabled:cursor-pointer"
       >
         Analyser les activités
       </button>
