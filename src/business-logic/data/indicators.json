@@ -1,0 +1,27 @@
+[
+  {
+    "shortcut": "IF",
+    "longName": "Facteur d'Intensité",
+    "description": "### 1. IF — Intensity Factor (Facteur d'Intensité)\n- **Définition :** Rapport entre la puissance moyenne normalisée (ou fréquence cardiaque) d'une séance et la puissance fonctionnelle maximale (FTP) de l'athlète.\n- **Rôle :** Mesure l'intensité relative d'un entraînement. IF = 1 signifie un effort à FTP, 0.7 un effort modéré.\n\n- **Valeurs typiques :**\n\n- Faible : < 0.6\n\n- Modérée : 0.6-0.75\n\n- Élevée : 0.75-0.9\n\n- Très élevée : > 0.9"
+  },
+  {
+    "shortcut": "TSS",
+    "longName": "Score de charge d'entraînement",
+    "description": "### 2. TSS — Training Stress Score (Score de charge d'entraînement)\n\n- **Définition :** Quantifie la charge d'entraînement globale d'une séance en combinant durée et intensité.\n\n- **Rôle :** Permet d'estimer la “fatigue” générée par une séance. Plus le TSS est élevé, plus la séance est exigeante.\n\n- **Utilisation :** Sert à suivre la charge cumulée sur plusieurs jours."
+  },
+  {
+    "shortcut": "CTL",
+    "longName": "Charge d'entrainement chronique",
+    "description": " **Définition :** Moyenne mobile pondérée de la charge d'entraînement (TSS) sur environ 6 semaines (42 jours).\n- **Rôle :** Indique la forme physique globale de l'athlète sur le moyen-long terme, sa “capacité d'endurance”.\n- **Calcul :** Moyenne exponentielle glissante du TSS des 42 derniers jours."
+  },
+  {
+    "shortcut": "ATL",
+    "longName": "Charge d'entrainement aigue",
+    "description": "**Définition :** Moyenne mobile pondérée de la charge d'entraînement (TSS) sur une semaine (7 jours).\n- **Rôle :** Indique la fatigue accumulée récente, liée aux séances des derniers jours.\n- **Calcul :** Moyenne exponentielle glissante du TSS des 7 derniers jours."
+  },
+  {
+    "shortcut": "TSB",
+    "longName": "Balance de charge d'entrainement",
+    "description": "- **Définition :** Différence entre CTL et ATL :\nTSB = CTL - ATL\n- **Rôle :** Indique l'état de fraîcheur ou fatigue de l'athlète :\n- **TSB positif (> 0)** → athlète bien reposé, frais.\n- **TSB négatif (< 0)** → athlète fatigué, surchargé.\n- **Utilisation :** Pour planifier les jours de repos et affiner le pic de forme avant compétition."
+  }
+]
